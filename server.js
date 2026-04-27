@@ -15,3 +15,13 @@ app.use("/expenses", expensesRoutes);
 app.listen(3001, () => {
     console.log("Server is running on port 3001");
 });
+
+const path = require("path");
+
+// Servir les fichiers React
+app.use(express.static(path.join(__dirname, "../dist")));
+
+// Pour React Router
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../dist/index.html"));
+});
