@@ -18,10 +18,13 @@ app.listen(3001, () => {
 
 const path = require("path");
 
-// Servir les fichiers React
+// API routes AVANT
+app.use("/expenses", expensesRoutes);
+
+// Static React
 app.use(express.static(path.join(__dirname, "dist")));
 
-// Pour React Router
-app.get("/*", (req, res) => {
+// Catch ALL (TOUJOURS EN DERNIER)
+app.use((req, res) => {
     res.sendFile(path.join(__dirname, "dist/index.html"));
 });
