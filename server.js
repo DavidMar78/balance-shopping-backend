@@ -19,7 +19,7 @@ app.listen(3001, () => {
 const path = require("path");
 
 // Servir les fichiers React
-app.use(express.static(path.join(__dirname, "../dist")));
+app.use(express.static(path.join(__dirname, "dist")));
 
 // Pour React Router
 app.get("/*", (req, res) => {
