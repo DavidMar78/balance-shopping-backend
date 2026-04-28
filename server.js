@@ -23,7 +23,7 @@ app.use(express.static(path.join(__dirname, "dist"), {
 }));
 
 // CATCH ALL (toujours en dernier)
-app.get("*", (req, res) => {
+app.get((req, res) => {
     res.sendFile(path.join(__dirname, "dist/index.html"));
 });
 
