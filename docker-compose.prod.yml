@@ -1,0 +1,29 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: expenses_postgres_prod
+
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin123
+      POSTGRES_DB: expenses_db_prod
+
+    volumes:
+      - postgres_prod_data:/var/lib/postgresql/data
+
+  backend:
+    build: .
+    container_name: expenses_backend_prod
+
+    ports:
+      - "3002:3001"
+
+    environment:
+      DATABASE_URL: postgresql://admin:admin123@postgres:5432/expenses_db_prod
+      PORT: 3001
+
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_prod_data:

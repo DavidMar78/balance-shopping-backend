@@ -4,55 +4,72 @@ const db = require("../db");
 
 
 // GET
-router.get("/", (req,res) => {
-    db.all("SELECT * FROM expenses ORDER BY date DESC", [], (err, rows) => {
-        if (err) {return res.status(500).send(err.message)}
+router.get("/", async (req, res) => {
+    try {
+        const result = await db.query(
+            'SELECT * FROM expenses ORDER BY date DESC'
+        );
 
-        res.json(rows);
-    });
+        res.json(result.rows);
+
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
 });
 
 
 // POST
-router.post("/", (req, res) => {
-    const { user, shop, sum, date } = req.body;
-    db.run(
-        "INSERT INTO expenses (user, shop, sum, date) VALUES (?, ?, ?, ?)",
-        [user, shop, sum, date],
-        function (err) {
-            if (err) {return res.status(500).send(err.message)}
+router.post("/", async (req, res) => {
+    try {
+        const { user, shop, sum, date } = req.body;
 
-            res.json({ id: this.lastID });
-        }
-    );
+        const result = await db.query(
+            'INSERT INTO expenses ("user", shop, sum, date) VALUES ($1, $2, $3, $4) RETURNING id',
+            [user, shop, sum, date]
+        );
+
+        res.json({ id: result.rows[0].id });
+
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
 });
 
 
 // UPDATE
-router.put("/:id", (req, res) => {
-    const { id } = req.params;
-    const { user, shop, sum, date } = req.body;
+router.put("/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { user, shop, sum, date } = req.body;
 
-    db.run(
-        "UPDATE expenses SET user = ?, shop = ?, sum = ?, date = ? WHERE id = ?",
-        [user, shop, sum, date, id],
-        function (err) {
-            if (err) {return res.status(500).send(err.message)}
+        await db.query(
+            'UPDATE expenses SET "user" = $1, shop = $2, sum = $3, date = $4 WHERE id = $5',
+            [user, shop, sum, date, id]
+        );
 
-            res.json({ message: "Updated", changes: this.changes});
-        });
+        res.json({ message: "Updated" });
+
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
 });
 
 
 // DELETE
-router.delete("/:id", (req, res) => {
-    const { id } = req.params;
+router.delete("/:id", async (req, res) => {
+    try {
+        const { id } = req.params;
 
-    db.run("DELETE FROM expenses WHERE id = ?", [id], function (err) {
-            if (err) {return res.status(500).send(err.message)}
+        await db.query(
+            "DELETE FROM expenses WHERE id = $1",
+            [id]
+        );
 
-            res.json({ message: "Deleted", changes: this.changes });
-        });
+        res.json({ message: "Deleted" });
+
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
 });
 
 

@@ -1,15 +1,9 @@
-const sqlite3 = require("sqlite3").verbose();
+require("dotenv").config();
 
-const db = new sqlite3.Database("./db.sqlite");
+const { Pool } = require("pg");
 
-db.run(`
-    CREATE TABLE IF NOT EXISTS expenses (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        user TEXT,
-        shop TEXT,
-        sum REAL,
-        date INTEGER 
-    )
-`);
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+});
 
-module.exports = db;
+module.exports = pool;
