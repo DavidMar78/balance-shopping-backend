@@ -10,5 +10,5 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url = "postgresql://admin:admin123@127.0.0.1:5432/expenses_db"
+  url = env("DATABASE_URL")
 }
