@@ -1,7 +1,7 @@
 const bcrypt = require("bcrypt");
 
 async function hashPassword() {
-    const password = "W3lcome66759";
+    const password = process.argv[2];
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
